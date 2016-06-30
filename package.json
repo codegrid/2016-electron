@@ -1,0 +1,31 @@
+{
+  "name": "2016-electron",
+  "version": "1.0.0",
+  "description": "demo for CodeGrid",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codegrid/2016-electron.git"
+  },
+  "author": "nakajmg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codegrid/2016-electron/issues"
+  },
+  "homepage": "https://github.com/codegrid/2016-electron#readme",
+  "dependencies": {
+    "chokidar": "^1.6.0",
+    "highlight.js": "^9.4.0",
+    "marked": "^0.3.5",
+    "open": "0.0.5",
+    "sanitize-html": "^1.12.0"
+  },
+  "peerDependencies": {
+    "electron-packager": "^7.0.4",
+    "electron-prebuilt": "^1.2.3"
+  }
+}
