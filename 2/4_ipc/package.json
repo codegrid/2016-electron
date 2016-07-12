@@ -1,0 +1,15 @@
+{
+  "name": "markdown",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "version": "electron -v",
+    "release": "electron-packager ./ markdown-preview --platform=darwin,win32 --arch=x64"
+  },
+  "dependencies": {
+    "electron-prebuilt": "^1.2.6"
+  },
+  "devDependencies": {
+    "electron-packager": "^7.2.0"
+  }
+}
