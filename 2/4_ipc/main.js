@@ -54,6 +54,23 @@ app.on('ready', () => {
           }
         }
       ]
+    }, {
+      label: 'Debug',
+      submenu: [
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: (function() {
+            if (process.platform == 'darwin')
+              return 'Alt+Command+I';
+            else
+              return 'Ctrl+Shift+I';
+          })(),
+          click(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.webContents.toggleDevTools();
+          }
+        }
+      ]
     }
   ];
 
