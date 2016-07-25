@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello Electron!!</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+    webview {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <webview src="./webview.html" preload="./webview.js"></webview>
+  <script>
+    const $preview = document.querySelector('#preview');
+    const {ipcRenderer} = require('electron');
+    const webview = document.querySelector('webview');
+
+    ipcRenderer.on('sendMarkdown', (e, md) => {
+      webview.send('updatePreview', md);
+    });
+
+    webview.addEventListener('console-message', e => {
+      console.log(e.message);
+    });
+  </script>
+</body>
+</html>

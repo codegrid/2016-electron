@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello Electron!!</title>
+</head>
+<body>
+  <div id="preview"></div>
+  <script>
+    const $preview = document.querySelector('#preview');
+    const {ipcRenderer} = require('electron');
+    ipcRenderer.on('sendMarkdown', (e, md) => {
+      $preview.innerHTML = md;
+    });
+  </script>
+</body>
+</html>
