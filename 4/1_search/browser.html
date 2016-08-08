@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello Electron!!</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+    webview {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <input type="text" class="search-input">
+    <span class="search-count"></span>
+  </div>
+  <webview src="./webview.html" preload="./webview.js" id="preview"></webview>
+  <script>
+    const {ipcRenderer} = require('electron');
+    const $preview = document.querySelector('#preview');
+    const $searchInput = document.querySelector('.search-input');
+    const $searchCount = document.querySelector('.search-count')
+
+    ipcRenderer.on('sendMarkdown', (e, md) => {
+      $preview.send('updatePreview', md);
+    });
+
+    $preview.addEventListener('console-message', e => {
+      console.log(e.message);
+    });
+
+
+    var prevText = '';
+    $searchInput.addEventListener('keydown', (e) => {
+      // Shiftキーが押されてる場合は後ろ方向に検索する
+      var forward = !e.shiftKey;
+      var text = $searchInput.value;
+
+      switch(e.code) {
+        // 検索の開始
+        case 'Enter':
+          findInPage(text, forward);
+          break;
+
+        // 検索の終了
+        case 'Escape':
+          stopFindInPage();
+          break;
+      }
+    });
+
+
+    function findInPage(text, forward) {
+      let findNext = false;
+      // 文字が入力されてない場合には検索を止める
+      if (text === '') {
+        prevText = '';
+        stopFindInPage();
+        return;
+      }
+
+      // 前回と同じ文字列の検索の場合は次に進む
+      if (text === prevText) {
+        findNext = true;
+      }
+      // 前回と違う場合には先頭から検索する
+      else {
+        prevText = text;
+      }
+
+      $preview.findInPage(text, {findNext, forward});
+    }
+
+    function stopFindInPage() {
+      $preview.stopFindInPage('clearSelection');
+      $searchCount.textContent = '';
+    }
+
+    var current = '';
+    $preview.addEventListener('found-in-page', ({result}) => {
+      const {activeMatchOrdinal, finalUpdate, matches} = result;
+
+      // マッチした件数の何番目かを保持
+      if (activeMatchOrdinal) {
+        current = activeMatchOrdinal;
+      }
+
+      // 検索処理が終わったら
+      if (finalUpdate) {
+        // マッチしない場合はリセット
+        if (matches === 0) {
+          current = 0;
+        }
+        // 何番目か/マッチした件数 を表示する
+        $searchCount.textContent = `${current}/${matches}`;
+      }
+    });
+
+  </script>
+</body>
+</html>

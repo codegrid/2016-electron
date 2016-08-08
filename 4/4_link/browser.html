@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello Electron!!</title>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+    webview {
+      height: 100%;
+    }
+  </style>
+  <link rel="stylesheet" href="./search.css">
+</head>
+<body>
+<div class="search-box">
+  <input type="text" class="search-input">
+  <span class="search-count"></span>
+</div>
+<webview src="./webview.html" preload="./webview.js" id="preview"></webview>
+<script>
+  const {ipcRenderer} = require('electron');
+  const $preview = document.querySelector('#preview');
+
+  ipcRenderer.on('sendMarkdown', (e, md) => {
+    $preview.send('updatePreview', md);
+  });
+
+  $preview.addEventListener('console-message', e => {
+    console.log(e.message);
+  });
+
+  const ElectronSearchText = require('electron-search-text');
+  const searcher = new ElectronSearchText({
+    target: '#preview',
+    input: '.search-input',
+    count: '.search-count',
+    box: '.search-box',
+    visibleClass: '.state-visible'
+  });
+
+  ipcRenderer.on('toggleSearch', function() {
+    searcher.emit('toggle');
+  });
+
+  $preview.addEventListener('did-finish-load', () => {
+    $preview.addEventListener('did-start-loading', () => {
+      $preview.stop();
+    });
+
+    function openOnBrowser({url}) {
+      require('electron').shell.openExternal(url);
+    }
+    $preview.addEventListener('will-navigate', openOnBrowser);
+    $preview.addEventListener('new-window', openOnBrowser);
+  });
+
+</script>
+</body>
+</html>
